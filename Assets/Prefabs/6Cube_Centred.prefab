@@ -198,7 +198,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2077641991565991057}
   - component: {fileID: 2835933133597990938}
-  - component: {fileID: 311073873265155414}
+  - component: {fileID: 7989500138756058201}
   m_Layer: 0
   m_Name: 6Cube_Centred
   m_TagString: Untagged
@@ -238,8 +238,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b71c214b94dbc514a802ea4fd14caa41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSnapSize: 10.3
---- !u!114 &311073873265155414
+--- !u!114 &7989500138756058201
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -707,7 +706,7 @@ TextMesh:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6400389892891601327}
-  m_Text: 12,32
+  m_Text: 0,0
   m_OffsetZ: 0
   m_CharacterSize: 0.01
   m_LineSpacing: 1
