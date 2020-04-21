@@ -4,27 +4,22 @@ using UnityEngine;
 
 public class EnemyMover : MonoBehaviour
 {
-    [SerializeField] List<Waypoint> path;
+    [SerializeField] List<Waypoint> path = default;
     [SerializeField] float stepRate = 1f;
 
     void Start() {
-
-        StartCoroutine(MoveWaypoint());
-        
+        if(path.Count > 0) StartCoroutine(MoveWaypoint());
     }
 
     IEnumerator MoveWaypoint() {
         foreach (Waypoint step in path) {
-            Debug.Log(step.gameObject.name);
             transform.position = step.transform.position;
             yield return new WaitForSeconds(stepRate);
         }
         Debug.Log("Done");
-
     }
 
 
-    void Update() {
-        
+    void Update() {  
     }
 }

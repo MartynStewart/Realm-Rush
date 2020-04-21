@@ -3,33 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
+[SelectionBase]
+[RequireComponent(typeof(Waypoint))]
 public class EditorSnap : MonoBehaviour
 {
-    const float gridSnapSize = 10.2f;
     private Waypoint waypoint;
-    private TextMesh label;
-    Vector3 gridPos;
+    private float gridSize;
+
+    void Awake() {
+        waypoint = GetComponent<Waypoint>();
+    }
 
     void Start() {
-        label = transform.GetComponentInChildren<TextMesh>();
+        GameObject towerBaseWaypoint;
+        towerBaseWaypoint = this.gameObject;
+        Vector3 towerPos = towerBaseWaypoint.transform.position + Vector3.up * 3;
     }
 
     void Update() {
-
         SnapToGrid();
         UpdateLabel();
     }
 
     private void SnapToGrid() {
-        
-        gridPos.x = Mathf.RoundToInt(transform.position.x / gridSnapSize) * gridSnapSize;
-        gridPos.y = Mathf.RoundToInt(transform.position.y / gridSnapSize) * gridSnapSize;
-        gridPos.z = Mathf.RoundToInt(transform.position.z / gridSnapSize) * gridSnapSize;
-        transform.position = gridPos;
+        gridSize = waypoint.GetGridSize();
+        Vector2 gridPos = waypoint.GetGridPos();
+        transform.position = new Vector3(gridPos.x * gridSize, 0 , gridPos.y * gridSize);
     }
 
     private void UpdateLabel() {
-        string PosText = transform.position.x / gridSnapSize + "," + transform.position.z / gridSnapSize;
+        TextMesh label = transform.GetComponentInChildren<TextMesh>();
+        string PosText = transform.position.x / gridSize + "," + transform.position.z / gridSize;
         label.text = PosText;
         transform.name = "Cube (" + PosText + ")";
     }
