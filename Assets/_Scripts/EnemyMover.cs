@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class EnemyMover : MonoBehaviour
 {
-    [SerializeField] List<Waypoint> path = default;
+    List<Waypoint> path = default;
     [SerializeField] float stepRate = 1f;
 
     void Start() {
+        path = FindObjectOfType<Pathfinder>().GetRoute();
         if(path.Count > 0) StartCoroutine(MoveWaypoint());
     }
 
