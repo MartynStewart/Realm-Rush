@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pathfinder : MonoBehaviour
+public class TruePathfinder : MonoBehaviour
 {
-    Dictionary<Vector2Int, Waypoint> grid = new Dictionary<Vector2Int, Waypoint>();
-    List<Waypoint> correctroute = new List<Waypoint>();
+    Dictionary<Vector2Int, Waypoint> grid = new Dictionary<Vector2Int, Waypoint>();         //Holds the grid itself
+    List<Waypoint> visited = new List<Waypoint>();                                          //Holds a list of points we've already been to
+    Dictionary<Waypoint, Waypoint> routeList = new Dictionary<Waypoint, Waypoint>();        //Holds how we got TO, FROM each grid pos
+    Queue<Waypoint> queue = new Queue<Waypoint>();                                          //Holds the current "To Check" queue
+    List<Waypoint> correctroute = new List<Waypoint>();                                     //Holds the route taken to get to the goal
 
     Vector2Int[] directions = {
                             Vector2Int.up,
@@ -15,31 +18,45 @@ public class Pathfinder : MonoBehaviour
                             Vector2Int.left, 
     };
 
-    private Queue<Waypoint> queue = new Queue<Waypoint>();
     private Waypoint searchCentre;
+    private Waypoint startWaypoint;
+    private Waypoint goalWaypoint;
+    private bool isRunning = true;
 
-    public bool isRunning = true;
-    public Waypoint startWaypoint;
-    public Waypoint goalWaypoint;
-
-    void Start() {
+    private void Awake() {
         LoadBlocks();       //Put the blocks into a collection
+    }
+
+    public Waypoint GetGridPos(Vector2Int checkTransform) {
+        Debug.Log("looking up for position: " + checkTransform);
+        return grid[checkTransform];
+    }
+
+    public List<Waypoint> GeneratePath(Waypoint initialPoint, Waypoint endPoint) {
+
+        if (initialPoint == endPoint) return null;
+
+        startWaypoint = initialPoint;
+        goalWaypoint = endPoint;
+        isRunning = true;
+
+        CleanLists();
         Pathfind();         //Find connections in the collection
-        SetRoute();         //Backwork the route based on connections
-        DebugRoute();       //Output the route for checking         //TODO: Remove this
+        SetRoute2();         //Backwork the route based on connections
+        //DebugRoute();
         ColourBlocks();     //Highlight the start/end positions     //TODO: Remove this
+        return correctroute;
     }
 
 
 
     private void LoadBlocks() {
         Waypoint[] waypoints = FindObjectsOfType<Waypoint>();
+        grid.Clear();
 
         foreach(Waypoint waypoint in waypoints) {
-
             Vector2Int gridPos = waypoint.GetGridPos();
             bool isOverlapping = grid.ContainsKey(gridPos);
-
             if (isOverlapping) {
                 Debug.LogWarning("Overlapping grid in: " + gridPos + ", skipping it");          //Avoid duplication of blocks in our grid
             } else {
@@ -58,7 +75,7 @@ public class Pathfinder : MonoBehaviour
 
         while (queue.Count > 0 && isRunning) {          
             searchCentre = queue.Dequeue();                                 //Take the first instance out of the queue
-            searchCentre.isExplored = true;                                 //and set it to having been explored
+            visited.Add(searchCentre);                                      //Added to the visited grid list
             HaltIfEndFound();                                               //check if this point is the goal waypoint
             ExplorNeighbours();                                             //check neighbours
         }
@@ -77,9 +94,9 @@ public class Pathfinder : MonoBehaviour
 
     private void QueueNewNeighbour(Vector2Int neighbourGrid) {
         Waypoint neighbour = grid[neighbourGrid];                           //Define the waypoint as per grid pos
-        if (!neighbour.isExplored && !queue.Contains(neighbour)) {          //If it's already been explored or added we don't do anything           //TODO - Clean this up
+        if (visited.Contains(neighbour) == false && !queue.Contains(neighbour)) {          //If it's already been explored or added we don't do anything           //TODO - Clean this up
             queue.Enqueue(neighbour);                                       //Add it to the queue
-            neighbour.exploredFrom = searchCentre;
+            routeList.Add(neighbour, searchCentre);
         }
     }
 
@@ -89,23 +106,26 @@ public class Pathfinder : MonoBehaviour
         }
     }
 
-    private void SetRoute() {                                       //This backworks the route from the found finishing position based on where the block was found from
+    private void SetRoute2() {                                       //This backworks the route from the found finishing position based on where the block was found from
         Waypoint currentGridPos = goalWaypoint;
         correctroute.Add(currentGridPos);
         do {
-            currentGridPos = currentGridPos.exploredFrom;
-            correctroute.Add(currentGridPos);
+            currentGridPos = routeList[currentGridPos];             //Get the explored from from the dictionary
+            correctroute.Add(currentGridPos);                   
         } while (currentGridPos != startWaypoint);
         correctroute.Reverse();                                     //Due to backworking our list in in the wrong order so fix this
     }
 
-    public List<Waypoint> GetRoute() {
-        return correctroute;                                        //Called by anyone needing the route  //TODO: Rewrite class to take in current and goal to return a route
+    private void CleanLists() {
+        visited.Clear();
+        routeList.Clear();
+        queue.Clear();
+        correctroute.Clear();
     }
 
-    private void DebugRoute() {
+
+    private void DebugRoute() {                                 //Use if we need to review the route taken
         for (int i = 0; i < correctroute.Count; i++) {
-            Debug.Log("Found Route: " + correctroute[i]);
             correctroute[i].SetTopColour(Color.blue);
         }
     }
