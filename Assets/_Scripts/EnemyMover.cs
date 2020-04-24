@@ -34,20 +34,20 @@ public class EnemyMover : MonoBehaviour
     }
 
     IEnumerator MoveWaypoint() {
+        Debug.Log(gameObject.name + " is starting movement");
         foreach (Waypoint step in path) {
             transform.position = step.transform.position;
             yield return new WaitForSeconds(stepRate);
         }
         Debug.Log("Done");
-        path = null;
     }
 
     public void GetNewPath() {
         isSeeking = true;
         FindMyGrid();
         path = FindObjectOfType<TruePathfinder>().GeneratePath(myCurrentGrid, goalSeek);
-        Debug.Log("Pathfinding done");
         if (path != null && path.Count > 0) StartCoroutine(MoveWaypoint());
+        path = null;
     }
 
 
