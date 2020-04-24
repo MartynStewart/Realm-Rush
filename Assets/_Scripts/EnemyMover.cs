@@ -23,12 +23,7 @@ public class EnemyMover : MonoBehaviour
     void FindMyGrid() {
         Vector3 myAdjPos = RoundThis(transform.position * (1 / goalSeek.GetGridSize()), 0);
         Vector2Int my2dPos = new Vector2Int((int)myAdjPos.x, (int)myAdjPos.z);
-
-        Debug.Log("My truepos is: "+ transform.position +" my adjPos: " + myAdjPos + " || my2dPos: " + my2dPos);
-
         myCurrentGrid = pathFinder.GetGridPos(my2dPos);
-
-        
 
         if (myCurrentGrid == null) {
             Debug.LogError("Position not found: " + my2dPos);
@@ -52,7 +47,7 @@ public class EnemyMover : MonoBehaviour
         FindMyGrid();
         path = FindObjectOfType<TruePathfinder>().GeneratePath(myCurrentGrid, goalSeek);
         Debug.Log("Pathfinding done");
-        if (path.Count != 0) StartCoroutine(MoveWaypoint());
+        if (path != null && path.Count > 0) StartCoroutine(MoveWaypoint());
     }
 
 

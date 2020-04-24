@@ -28,7 +28,6 @@ public class TruePathfinder : MonoBehaviour
     }
 
     public Waypoint GetGridPos(Vector2Int checkTransform) {
-        Debug.Log("looking up for position: " + checkTransform);
         return grid[checkTransform];
     }
 
@@ -42,7 +41,7 @@ public class TruePathfinder : MonoBehaviour
 
         CleanLists();
         Pathfind();         //Find connections in the collection
-        SetRoute2();         //Backwork the route based on connections
+        SetRoute();         //Backwork the route based on connections
         //DebugRoute();
         ColourBlocks();     //Highlight the start/end positions     //TODO: Remove this
         return correctroute;
@@ -106,7 +105,7 @@ public class TruePathfinder : MonoBehaviour
         }
     }
 
-    private void SetRoute2() {                                       //This backworks the route from the found finishing position based on where the block was found from
+    private void SetRoute() {                                       //This backworks the route from the found finishing position based on where the block was found from
         Waypoint currentGridPos = goalWaypoint;
         correctroute.Add(currentGridPos);
         do {
