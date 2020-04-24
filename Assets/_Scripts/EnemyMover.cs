@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyMover : MonoBehaviour
 {
     List<Waypoint> path = default;
+    List<Waypoint> myPath = new List<Waypoint>();
     TruePathfinder pathFinder;
     Waypoint myCurrentGrid;
 
@@ -35,8 +36,9 @@ public class EnemyMover : MonoBehaviour
 
     IEnumerator MoveWaypoint() {
         Debug.Log(gameObject.name + " is starting movement");
-        foreach (Waypoint step in path) {
-            transform.position = step.transform.position;
+        foreach (Waypoint myStep in myPath) {
+            Debug.Log(gameObject.name + " taking step to: " + myStep.GetGridPos());
+            transform.position = myStep.transform.position;
             yield return new WaitForSeconds(stepRate);
         }
         Debug.Log("Done");
@@ -46,10 +48,14 @@ public class EnemyMover : MonoBehaviour
         isSeeking = true;
         FindMyGrid();
         path = FindObjectOfType<TruePathfinder>().GeneratePath(myCurrentGrid, goalSeek);
-        if (path != null && path.Count > 0) StartCoroutine(MoveWaypoint());
+        if (path != null && path.Count > 0) {
+            foreach (Waypoint step in path) {
+                myPath.Add(step);
+            }
+            StartCoroutine(MoveWaypoint());
+        }
         path = null;
     }
-
 
     Vector3 RoundThis(Vector3 vector3, int decimalPlaces = 2) {
         float multiplier = 1;
