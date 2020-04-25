@@ -26,8 +26,6 @@ public class Pathfinder : MonoBehaviour
         LoadBlocks();       //Put the blocks into a collection
         Pathfind();         //Find connections in the collection
         SetRoute();         //Backwork the route based on connections
-        DebugRoute();       //Output the route for checking         //TODO: Remove this
-        ColourBlocks();     //Highlight the start/end positions     //TODO: Remove this
     }
 
 
@@ -48,10 +46,6 @@ public class Pathfinder : MonoBehaviour
         }
     }
 
-    void ColourBlocks() {
-        startWaypoint.SetTopColour(Color.red);
-        goalWaypoint.SetTopColour(Color.green);
-    }
 
     private void Pathfind() {
         queue.Enqueue(startWaypoint);                                       //Load the start point into the queue
@@ -101,13 +95,6 @@ public class Pathfinder : MonoBehaviour
 
     public List<Waypoint> GetRoute() {
         return correctroute;                                        //Called by anyone needing the route  //TODO: Rewrite class to take in current and goal to return a route
-    }
-
-    private void DebugRoute() {
-        for (int i = 0; i < correctroute.Count; i++) {
-            Debug.Log("Found Route: " + correctroute[i]);
-            correctroute[i].SetTopColour(Color.blue);
-        }
     }
 
 }

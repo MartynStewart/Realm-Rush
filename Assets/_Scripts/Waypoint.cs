@@ -23,10 +23,6 @@ public class Waypoint : MonoBehaviour
         return gridPos;
     }
 
-    public void SetTopColour(Color colour) {
-        transform.Find("Quad - Top").GetComponent<Renderer>().material.color = colour;
-    }
-
     void Update() {
         
     }

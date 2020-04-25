@@ -42,8 +42,6 @@ public class TruePathfinder : MonoBehaviour
         CleanLists();
         Pathfind();         //Find connections in the collection
         SetRoute();         //Backwork the route based on connections
-        //DebugRoute();
-        ColourBlocks();     //Highlight the start/end positions     //TODO: Remove this
         return correctroute;
     }
 
@@ -62,11 +60,6 @@ public class TruePathfinder : MonoBehaviour
                 grid.Add(gridPos, waypoint);
             }
         }
-    }
-
-    void ColourBlocks() {
-        startWaypoint.SetTopColour(Color.red);
-        goalWaypoint.SetTopColour(Color.green);
     }
 
     private void Pathfind() {
@@ -120,13 +113,6 @@ public class TruePathfinder : MonoBehaviour
         routeList.Clear();
         queue.Clear();
         correctroute.Clear();
-    }
-
-
-    private void DebugRoute() {                                 //Use if we need to review the route taken
-        for (int i = 0; i < correctroute.Count; i++) {
-            correctroute[i].SetTopColour(Color.blue);
-        }
     }
 
 }
