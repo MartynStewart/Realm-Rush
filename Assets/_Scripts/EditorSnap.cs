@@ -8,7 +8,10 @@ using UnityEngine;
 public class EditorSnap : MonoBehaviour
 {
     private Waypoint waypoint;
-    private float gridSize;
+    public float gridSize;
+
+    public GameObject Model1;
+    public GameObject Model2;
 
     void Awake() {
         waypoint = GetComponent<Waypoint>();
@@ -29,6 +32,7 @@ public class EditorSnap : MonoBehaviour
         gridSize = waypoint.GetGridSize();
         Vector2 gridPos = waypoint.GetGridPos();
         transform.position = new Vector3(gridPos.x * gridSize, 0 , gridPos.y * gridSize);
+        SetModelUsed(gridPos);
     }
 
     private void UpdateLabel() {
@@ -36,5 +40,17 @@ public class EditorSnap : MonoBehaviour
         string PosText = transform.position.x / gridSize + "," + transform.position.z / gridSize;
         label.text = PosText;
         transform.name = "Cube (" + PosText + ")";
+    }
+
+    private void SetModelUsed(Vector2 gridPos) {
+        int gridNo = Mathf.RoundToInt(gridPos.x + gridPos.y);
+
+        if (gridNo % 2 == 0) {
+            Model1.SetActive(true);
+            Model2.SetActive(false);
+        } else {
+            Model1.SetActive(false);
+            Model2.SetActive(true);
+        }
     }
 }

@@ -8,13 +8,17 @@ public class EnemyMover : MonoBehaviour
     List<Waypoint> myPath = new List<Waypoint>();
     TruePathfinder pathFinder;
     Waypoint myCurrentGrid;
+    [SerializeField]GameObject deathFX;
 
     public float stepRate = 1f;
+    public int lives;
     public Waypoint goalSeek;
     public bool isSeeking = false;
+    public bool isAlive = true;
 
     void Start() {
         pathFinder = FindObjectOfType<TruePathfinder>();
+        deathFX = Resources.Load<GameObject>("DeathDust"); 
     }
 
     private void Update() {
@@ -30,14 +34,12 @@ public class EnemyMover : MonoBehaviour
             Debug.LogError("Position not found: " + my2dPos);
             
         } else {
-            Debug.Log("Found my grid@ " + myCurrentGrid);
         }
     }
 
     IEnumerator MoveWaypoint() {
-        Debug.Log(gameObject.name + " is starting movement");
         foreach (Waypoint myStep in myPath) {
-            Debug.Log(gameObject.name + " taking step to: " + myStep.GetGridPos());
+            if (!isAlive) break;
             transform.position = myStep.transform.position;
             yield return new WaitForSeconds(stepRate);
         }
@@ -68,4 +70,20 @@ public class EnemyMover : MonoBehaviour
             Mathf.Round(vector3.z * multiplier) / multiplier);
     }
 
+    private void OnParticleCollision(GameObject other) {
+        lives--;
+        if (lives <= 0) {
+            isAlive = false;
+            DeathOutcome();
+            Destroy(gameObject,1f);
+        } else {
+            //play hit particle
+        }
+    }
+
+    private void DeathOutcome() {
+        GameObject myDeathFX = (GameObject)Instantiate(deathFX, transform.position, Quaternion.identity);
+        myDeathFX.transform.parent = GameObject.Find("SpawnedAtRunTime").transform;
+        myDeathFX.SetActive(true);
+    }
 }
