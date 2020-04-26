@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +9,8 @@ public class EnemyMover : MonoBehaviour
     List<Waypoint> myPath = new List<Waypoint>();
     TruePathfinder pathFinder;
     Waypoint myCurrentGrid;
-    [SerializeField]GameObject deathFX;
+    GameObject deathFX;
+    GameObject attackFX;
 
     public float stepRate = 1f;
     public int lives;
@@ -18,7 +20,8 @@ public class EnemyMover : MonoBehaviour
 
     void Start() {
         pathFinder = FindObjectOfType<TruePathfinder>();
-        deathFX = Resources.Load<GameObject>("DeathDust"); 
+        deathFX = Resources.Load<GameObject>("DeathDust");
+        attackFX = Resources.Load<GameObject>("AttackFX");
     }
 
     private void Update() {
@@ -29,7 +32,6 @@ public class EnemyMover : MonoBehaviour
         Vector3 myAdjPos = RoundThis(transform.position * (1 / goalSeek.GetGridSize()), 0);
         Vector2Int my2dPos = new Vector2Int((int)myAdjPos.x, (int)myAdjPos.z);
         myCurrentGrid = pathFinder.GetGridPos(my2dPos);
-
         if (myCurrentGrid == null) {
             Debug.LogError("Position not found: " + my2dPos);
             
@@ -41,9 +43,21 @@ public class EnemyMover : MonoBehaviour
         foreach (Waypoint myStep in myPath) {
             if (!isAlive) break;
             transform.position = myStep.transform.position;
+            myCurrentGrid = myStep;
             yield return new WaitForSeconds(stepRate);
         }
-        Debug.Log("Done");
+
+        if (myCurrentGrid = goalSeek) AttackBase();
+
+    }
+
+    private void AttackBase() {
+        GameObject myAttackFX = (GameObject)Instantiate(attackFX, transform.position, Quaternion.identity);
+        myAttackFX.transform.parent = GameObject.Find("SpawnedAtRunTime").transform;
+        myAttackFX.SetActive(true);
+
+        Destroy(myAttackFX, 2);
+        Destroy(gameObject);
     }
 
     public void GetNewPath() {
@@ -85,5 +99,6 @@ public class EnemyMover : MonoBehaviour
         GameObject myDeathFX = (GameObject)Instantiate(deathFX, transform.position, Quaternion.identity);
         myDeathFX.transform.parent = GameObject.Find("SpawnedAtRunTime").transform;
         myDeathFX.SetActive(true);
+        Destroy(myDeathFX, 2f);
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Pathfinder : MonoBehaviour
-{
+{/*
     Dictionary<Vector2Int, Waypoint> grid = new Dictionary<Vector2Int, Waypoint>();
     List<Waypoint> correctroute = new List<Waypoint>();
 
@@ -97,4 +97,4 @@ public class Pathfinder : MonoBehaviour
         return correctroute;                                        //Called by anyone needing the route  //TODO: Rewrite class to take in current and goal to return a route
     }
 
-}
+*/}

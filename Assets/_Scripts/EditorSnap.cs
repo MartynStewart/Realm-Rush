@@ -9,23 +9,28 @@ public class EditorSnap : MonoBehaviour
 {
     private Waypoint waypoint;
     public float gridSize;
+    private bool isDefenceGrid = false;
 
     public GameObject Model1;
     public GameObject Model2;
+    public GameObject Model3;
+
+    private void OnCollisionEnter(Collision collision) {
+        
+    }
 
     void Awake() {
         waypoint = GetComponent<Waypoint>();
+        
     }
 
     void Start() {
-        GameObject towerBaseWaypoint;
-        towerBaseWaypoint = this.gameObject;
-        Vector3 towerPos = towerBaseWaypoint.transform.position + Vector3.up * 3;
     }
 
     void Update() {
         SnapToGrid();
         UpdateLabel();
+        isDefenceGrid = waypoint.isDefenceGrid;
     }
 
     private void SnapToGrid() {
@@ -43,14 +48,23 @@ public class EditorSnap : MonoBehaviour
     }
 
     private void SetModelUsed(Vector2 gridPos) {
-        int gridNo = Mathf.RoundToInt(gridPos.x + gridPos.y);
 
-        if (gridNo % 2 == 0) {
-            Model1.SetActive(true);
-            Model2.SetActive(false);
-        } else {
+        if (isDefenceGrid) {
             Model1.SetActive(false);
-            Model2.SetActive(true);
+            Model2.SetActive(false);
+            Model3.SetActive(true);
+        } else {
+
+            int gridNo = Mathf.RoundToInt(gridPos.x + gridPos.y);
+            if (gridNo % 2 == 0) {
+                Model1.SetActive(true);
+                Model2.SetActive(false);
+                Model3.SetActive(false);
+            } else {
+                Model1.SetActive(false);
+                Model2.SetActive(true);
+                Model3.SetActive(false);
+            }
         }
     }
 }

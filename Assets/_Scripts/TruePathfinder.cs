@@ -86,7 +86,7 @@ public class TruePathfinder : MonoBehaviour
 
     private void QueueNewNeighbour(Vector2Int neighbourGrid) {
         Waypoint neighbour = grid[neighbourGrid];                           //Define the waypoint as per grid pos
-        if (visited.Contains(neighbour) == false && !queue.Contains(neighbour)) {          //If it's already been explored or added we don't do anything           //TODO - Clean this up
+        if (visited.Contains(neighbour) == false && !queue.Contains(neighbour) && !neighbour.isDefenceGrid) {          //If it's already been explored or added or is a defence block we don't do anything
             queue.Enqueue(neighbour);                                       //Add it to the queue
             routeList.Add(neighbour, searchCentre);
         }

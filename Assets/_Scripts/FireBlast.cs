@@ -5,6 +5,8 @@ using UnityEngine.UIElements;
 
 public class FireBlast : MonoBehaviour
 {
+
+    public Waypoint myWaypoint = default;
     public GameObject myTarget;
     private ParticleSystem myParticle;
     private EnemySpawner enemySpawner;
@@ -13,7 +15,7 @@ public class FireBlast : MonoBehaviour
 
     void Start() {
         enemySpawner = FindObjectOfType<EnemySpawner>();
-        myParticle = GetComponent<ParticleSystem>();
+        myParticle = GetComponentInChildren<ParticleSystem>();
         range *= FindObjectOfType<Waypoint>().GetGridSize();
     }
 
@@ -23,9 +25,8 @@ public class FireBlast : MonoBehaviour
             myParticle.Play(false);
             myTarget = enemySpawner.GetTarget(transform.position);
         } else {
-           // myParticle.Play(true);
-
-            transform.LookAt(myTarget.transform);
+            myParticle.gameObject.transform.LookAt(myTarget.transform);
+            Debug.DrawLine(transform.position, myTarget.transform.position,Color.black);
             if(Vector3.Distance(transform.position,myTarget.transform.position) > range) {
                 myTarget = null;
             }
